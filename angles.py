@@ -132,7 +132,7 @@ class CircleWithAngle(VGroup):
 class CreateAngles(Scene):
     def construct(self):
         scale_fct = 0.4
-        # ang_values = np.random.uniform(28.0, 359.0, 6)
+        # ang_values = np.random.uniform(28.0, 360.0, 6)
         ang_values = [163.0, 32.0, 227.0, 90.0, 270.0, 336.0]
         itm = ["a)", "b)", "c)", "d)", "e)", "f)"]
         cwa = [CircleWithAngle() for x in range(6)]
