@@ -1,5 +1,5 @@
 # angles
-Animation of angles (using Manim library)
+Animation of angles (experimental code using Manim Community Edition 0.17.2)
 
 Animates angles of different sizes to show the different kinds of angles. Written to support teaching some math concepts to my kids.
 
