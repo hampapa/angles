@@ -130,11 +130,12 @@ class CircleWithAngle(VGroup):
         return self
 
 class CreateAngles(Scene):
+    # ang_values = np.random.uniform(28.0, 360.0, 6)
+    ang_values = [163.0, 32.0, 227.0, 90.0, 270.0, 336.0]
+    itm = ["a)", "b)", "c)", "d)", "e)", "f)"]
+
     def construct(self):
         scale_fct = 0.4
-        # ang_values = np.random.uniform(28.0, 360.0, 6)
-        ang_values = [163.0, 32.0, 227.0, 90.0, 270.0, 336.0]
-        itm = ["a)", "b)", "c)", "d)", "e)", "f)"]
         cwa = [CircleWithAngle() for x in range(6)]
         tps = self.get_target_points(scale_fct, cwa[0])
         d = [Dot().shift(tps[i]) for i in range(6)]
@@ -175,8 +176,8 @@ class CreateAngles(Scene):
             self.add(ang_tex)
             # self.wait()
             self.play(
-                vt.animate.set_value(ang_values[i]*DEGREES),
-                run_time=4/360*ang_values[i],
+                vt.animate.set_value(self.ang_values[i]*DEGREES),
+                run_time=4/360*self.ang_values[i],
                 rate_func=linear
             )
             self.wait(1.5)
@@ -184,7 +185,7 @@ class CreateAngles(Scene):
             self.play(cwa[i].animate.scale(scale_fct))
             self.play(cwa[i].animate.move_to(d[i]))
 
-            item_tex = Tex(r"\item["+itm[i]+"]", font_size=27)
+            item_tex = Tex(r"\item["+self.itm[i]+"]", font_size=27)
             item_tex.next_to(
                 cwa[i],
                 buff=0.0,
@@ -195,51 +196,73 @@ class CreateAngles(Scene):
             self.add(item_tex)
             self.wait()
 
-        def get_ang_kind(ang: float) -> str:
-            str_a = r"\textbf{\textit{"
-
-            if ang > 0 and ang < 90:
-                return str_a + r"spitzer}}"
-            elif ang == 90:
-                return str_a + r"rechter}} "
-            elif ang > 90 and ang < 180:
-                return str_a + r"stumpfer}} "
-            elif ang == 180:
-                return str_a + r"gestreckter}} "
-            elif ang > 180 and ang < 360:
-                return str_a + r"erhabener}} "
-            elif ang == 360:
-                return str_a + r"voller}} "
-            elif ang == 0:
-                return str_a + r"Null}} "
-            else:
-                return str_a + r"unbestimmter}} "
-
-        def get_text_angles() -> str:
-            text = r"\begin{itemize}"
-            for i in range(6):
-                text = text+\
-                    r"\item["+\
-                    itm[i]+\
-                    r"] "+\
-                    get_ang_kind(ang_values[i])+\
-                    r" Winkel ($"+\
-                    str(int(ang_values[i]))+\
-                    r"\degree$)"
-            text = text + r"\end{itemize}"
-            return text
-
-        which_kind_tex = Tex(
-            get_text_angles(),
-            tex_template=template
+        tex_group = self.get_tex_angles()
+        which_kind_tex = VGroup(*tex_group)
+        which_kind_tex.arrange_in_grid(
+            cols=1, 
+            cell_alignment=LEFT,
+            buff=MED_LARGE_BUFF,
         )
         which_kind_tex.next_to(
             cwa[4],
-            direction=RIGHT, 
+            direction=RIGHT+UP, 
             buff=LARGE_BUFF,
-            index_of_submobject_to_align=0)
+            index_of_submobject_to_align=0,
+            # aligned_edge=cwa[4].get_right(),
+        )
         self.play(Write(which_kind_tex))
+        # self.add(index_labels(which_kind_tex[0]))
         self.wait()
+
+    def get_tex_angles(self) -> list[Tex]:
+        tex_group = []
+        for i in range(6):
+            tex_desc = Tex(
+                self.itm[i]+\
+                " "+\
+                self.get_ang_kind(self.ang_values[i])+\
+                r" Winkel ($"+\
+                str(int(self.ang_values[i]))+\
+                r"\degree$)",
+                tex_template=template
+            )
+            tex_desc[1].set_fill(color=YELLOW)
+            tex_group.append(tex_desc)
+
+        return tex_group
+
+        # text = r"\begin{itemize}"
+
+        # for i in range(6):
+        #     text = text+\
+        #         r"\item["+\
+        #         self.itm[i]+\
+        #         r"] "+\
+        #         self.get_ang_kind(self.ang_values[i])+\
+        #         r" Winkel ($"+\
+        #         str(int(self.ang_values[i]))+\
+        #         r"\degree$)"
+        # text = text + r"\end{itemize}"
+        # return text
+
+    def get_ang_kind(self, ang: float) -> str:
+        str_a = r"{{\textbf{\textit{"
+        if ang > 0 and ang < 90:
+            return str_a + r"spitzer}}}}"
+        elif ang == 90:
+            return str_a + r"rechter}}}}"
+        elif ang > 90 and ang < 180:
+            return str_a + r"stumpfer}}}}"
+        elif ang == 180:
+            return str_a + r"gestreckter}}}}"
+        elif ang > 180 and ang < 360:
+            return str_a + r"erhabener}}}}"
+        elif ang == 360:
+            return str_a + r"voller}}}}"
+        elif ang == 0:
+            return str_a + r"Null}}}}"
+        else:
+            return str_a + r"unbestimmter}}}}"
 
     def get_target_points(
         self, 
