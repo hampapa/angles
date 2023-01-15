@@ -174,7 +174,6 @@ class CreateAngles(Scene):
 
             self.play(Create(cwa[i]), run_time=2)
             self.add(ang_tex)
-            # self.wait()
             self.play(
                 vt.animate.set_value(self.ang_values[i]*DEGREES),
                 run_time=4/360*self.ang_values[i],
@@ -208,10 +207,8 @@ class CreateAngles(Scene):
             direction=RIGHT+UP, 
             buff=LARGE_BUFF,
             index_of_submobject_to_align=0,
-            # aligned_edge=cwa[4].get_right(),
         )
         self.play(Write(which_kind_tex))
-        # self.add(index_labels(which_kind_tex[0]))
         self.wait()
 
     def get_tex_angles(self) -> list[Tex]:
@@ -230,20 +227,6 @@ class CreateAngles(Scene):
             tex_group.append(tex_desc)
 
         return tex_group
-
-        # text = r"\begin{itemize}"
-
-        # for i in range(6):
-        #     text = text+\
-        #         r"\item["+\
-        #         self.itm[i]+\
-        #         r"] "+\
-        #         self.get_ang_kind(self.ang_values[i])+\
-        #         r" Winkel ($"+\
-        #         str(int(self.ang_values[i]))+\
-        #         r"\degree$)"
-        # text = text + r"\end{itemize}"
-        # return text
 
     def get_ang_kind(self, ang: float) -> str:
         str_a = r"{{\textbf{\textit{"
